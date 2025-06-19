@@ -39,3 +39,25 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
     }
   }
 }
+
+# Bucket to store logs
+resource "aws_s3_bucket" "log_bucket" {
+  bucket = "my-log-bucket-123456789"
+}
+
+# Main bucket with logging enabled
+resource "aws_s3_bucket" "secure_bucket" {
+  bucket = "my-secure-s3-bucket-example-12345678"
+
+  logging {
+    target_bucket = aws_s3_bucket.log_bucket.id
+    target_prefix = "log/"
+  }
+
+  tags = {
+    Name        = "SecureBucket"
+    Environment = "Dev"
+  }
+
+  force_destroy = false
+}
